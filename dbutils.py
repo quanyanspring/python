@@ -3,23 +3,33 @@ import time
 import json
 from prettytable import PrettyTable
 import requests
+from DBConfig import db_list_info
 
 server = "http://dbaexecsql.longfor.com/data_application/app_query/"
 
+def getDbInfo():
+    return db_list_info[0]
 
 # 执行sql 并查询
-def execute_sql(sql, detail, instance, db_name):
+def execute_sql(sql, detail,toJSon = False):
+
     start_cond = time.time()
     head = {
-        "Cookie": "CASTGC=TGT-20081-DreCpqwnF6mQd0EJfY-DZKVKDq5Wio5VBYr8qMr-m76EKZXgdqsxTQTfTSwH-b2nD-I-longhu; account=TGT-20081-DreCpqwnF6mQd0EJfY-DZKVKDq5Wio5VBYr8qMr-m76EKZXgdqsxTQTfTSwH-b2nD-I-longhu; sessionid=9lbrvi6cxwjd99jnyzvq0ny71odyvamt",
-        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
+        "Cookie": "CASTGC=TGT-565885-BElPen4rUJGoIsRQCL9MJEL3y9iH-faVzdJDa-xujnQaRsHO4IhatqgQD18o9fgCzxU-longhu; account=TGT-565885-BElPen4rUJGoIsRQCL9MJEL3y9iH-faVzdJDa-xujnQaRsHO4IhatqgQD18o9fgCzxU-longhu; sessionid=3pfzmuoggnvmxmuo8j64r1r968unj2wt",
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "Host": "dbaexecsql.longfor.com",
+        "Origin": "http: // dbaexecsql.longfor.com",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36",
+        "Accept": "application/json, text/javascript, */*; q=0.01",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
     }
     # 去除换行
     sql = " ".join(sql.strip().split("\n"))
     # 请求数据
     data = {
-        "instance_name": instance,
-        "db_name": db_name,
+        "instance_name": getDbInfo()[1],
+        "db_name": getDbInfo()[2],
         "schema_name": "",
         "tb_name": "",
         "sql_content": sql,
@@ -42,6 +52,9 @@ def execute_sql(sql, detail, instance, db_name):
         # print(msg)
 
         data_cont = json_body["data"]
+        if "affected_rows" in data_cont and "query_time" in data_cont:
+            print("结果总数：%d，查询时间：%f" % (data_cont["affected_rows"], data_cont["query_time"]))
+
         if "column_list" not in data_cont:
             print("\n" + sql)
             return None, None
@@ -69,6 +82,27 @@ def execute_sql(sql, detail, instance, db_name):
         # print("")
         # print(tb)
         #  print("total line {}".format(len(row_list)))
+        result_list = []
+        if toJSon:
+            for item in row_list:
+                if len(item) >= 0:
+                    result = {}
+                    for idx,value in enumerate(item):
+                        if isinstance(value,int):
+                            result["\"" + underline2Hump(col_list[idx]) + "\""] = value
+                        elif isinstance(value, str) or isinstance(value, float):
+                            if col_list[idx] == 'extra':
+                                result["\"" + underline2Hump(col_list[idx]) + "\""] = json.dumps(str(value))
+                            else:
+                                result["\"" + underline2Hump(col_list[idx]) + "\""] = "\"" + str(value) + "\""
+                        elif value == None:
+                            pass
+                        else:
+                           result["\"" + underline2Hump(col_list[idx]) + "\""] = value
+                    result_list.append(result)
+
+            return col_list,result_list
+
         return col_list, row_list
 
 
@@ -86,3 +120,17 @@ def invoke_post(url, head, params):
 # tidb 数据查询
 def execute_tidb_sql(sql, instance="tidb10.31.48.7_脱敏查询", db_name="longem_tidb", detail="query"):
     return execute_sql(sql, detail, instance, db_name)
+
+def underline2Hump(text):
+    arr = text.lower().split('_')
+    res = []
+    for idx,var in enumerate(arr):
+        if len(arr) == 1:
+            res.append(var)
+            break
+        elif idx == 0:
+            res.append(var)
+            continue
+        else:
+            res.append(var[0].upper() + var[1:])
+    return ''.join(res)

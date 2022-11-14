@@ -9,7 +9,7 @@ from ConstansList import activity_no_map
 
 # 写入文件
 def print(msg):
-    path = "/Users/admin/Desktop/订单模块排查/msg_result.json"
+    path = "/Users/admin/Desktop/订单模块排查/msg_result_new.json"
     file = None
     try:
         # if not os.path.exists(path):
@@ -31,35 +31,55 @@ def getExtra(activity_no):
 def grantListToCompanyTransaction(ff_acc_no, activity_no):
 
     #1、 查询差异数据
-    col_list_m, row_list_g = dbutils.execute_sql(order_sql.t_platform_grant_list_sql.format("'" + activity_no + "'", "'" + ff_acc_no + "'", "'" + getExtra(activity_no) + "'"), "查询差异流水")
-    if row_list_g is None or len(row_list_g) <= 0:
-        print("发放账户,ff_acc_no = %s,activity_no = %s,无差别数据" % (ff_acc_no, activity_no))
-    else:
-        print("发放账户,ff_acc_no = %s,activity_no = %s,差别数据条数 = %s" % (ff_acc_no, activity_no, str(len(row_list_g))))
-
-        if len(row_list_g) >= 1000:
-            print("差别数据大于1000,具体数值:%d" % len(row_list_g))
-
-        #2、 查询项目公司表id
-        col_list_m, row_list_c = dbutils.execute_sql(order_sql.t_company_transaction_sql.format("'" + ff_acc_no + "'", strutils.remove_bracket(row_list_g)), "查询项目公司流水id")
-        if row_list_c is None or len(row_list_c) <= 0:
-            print("发放账户,ff_acc_no = %s,activity_no = %s,无项目公司流水" % (ff_acc_no, activity_no))
-            raise RuntimeError
+    #TODO max_id = 16898955
+    max_id = 16898955
+    while True:
+        col_list_m, row_list_g = dbutils.execute_sql(order_sql.t_platform_grant_list_all_order_by_sql.format("'" + activity_no + "'",max_id), "查询差异流水")
+        if row_list_g is None or len(row_list_g) <= 0:
+            print("发放账户,ff_acc_no = %s,activity_no = %s,无差别数据" % (ff_acc_no, activity_no))
+            break
         else:
-            if len(row_list_g) != len(row_list_c):
-                raise TypeError
-            for index, item in enumerate(row_list_c):
-                update_data = {
-                    "data": {
-                        "id": item[0],
-                        "extra": getExtra(activity_no)
-                    }
-                }
+            print("发放账户,ff_acc_no = %s,activity_no = %s,差别数据条数 = %s" % (ff_acc_no, activity_no, str(len(row_list_g))))
 
-                #3、调用接口清洗数据
-                dbutils_prod.execute("/api/migrate/modify/com/trans/data", update_data)
+            # if len(row_list_g) >= 1000:
+            #     print("差别数据大于1000,具体数值:%d" % len(row_list_g))
 
-                print("数据清洗成功:{0}".format(update_data))
+            max_id = row_list_g[len(row_list_g) -1][0]
+            print("当前最大id为:%d" % max_id)
+
+            out_trans_no = []
+            for row in row_list_g:
+                out_trans_no.append("'" + row[2] + "'")
+
+            #2、 查询项目公司表id
+            col_list_m, row_list_c = dbutils.execute_sql(order_sql.t_company_transaction_sql.format("'" + ff_acc_no + "'", ",".join(out_trans_no)), "查询项目公司流水id")
+            if row_list_c is None or len(row_list_c) <= 0:
+                print("发放账户,ff_acc_no = %s,activity_no = %s,无项目公司流水" % (ff_acc_no, activity_no))
+                raise RuntimeError
+            else:
+
+                # 扩展字段
+                extra = getExtra(activity_no)
+
+                if len(row_list_g) != len(row_list_c):
+                    raise TypeError
+                for index, item in enumerate(row_list_c):
+                    if item[3] == extra:
+                        print("扩展字段相同:{0}".format(extra))
+                        continue
+                    else:
+                        print("扩展字段不相同id:{0},grant_list:{1},company:{2}".format(item[0], extra, item[3]))
+                        update_data = {
+                            "data": {
+                                "id": item[0],
+                                "extra": extra
+                            }
+                        }
+
+                        #3、调用接口清洗数据
+                        dbutils_prod.execute("/api/migrate/modify/com/trans/data", update_data)
+
+                        print("数据清洗成功:{0}".format(update_data))
 
 
 def checkActivity(ff_acc_no, activity_no):

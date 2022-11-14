@@ -31,7 +31,7 @@ def getExtra(activity_no):
 def grantListToCompanyTransaction(ff_acc_no, activity_no):
 
     #1、 查询差异数据
-    col_list_m, row_list_g = dbutils.execute_sql(order_sql.t_platform_grant_list_sql.format("'" + activity_no + "'", "'" + ff_acc_no + "'", "'" + getExtra(activity_no) + "'"), "查询差异流水")
+    col_list_m, row_list_g = dbutils.execute_sql(order_sql.t_platform_grant_list_right_sql.format("'" + activity_no + "'", "'" + ff_acc_no + "'", "'" + getExtra(activity_no) + "'"), "查询差异流水")
     if row_list_g is None or len(row_list_g) <= 0:
         print("发放账户,ff_acc_no = %s,activity_no = %s,无差别数据" % (ff_acc_no, activity_no))
     else:
@@ -40,27 +40,18 @@ def grantListToCompanyTransaction(ff_acc_no, activity_no):
         if len(row_list_g) >= 1000:
             print("差别数据大于1000,具体数值:%d" % len(row_list_g))
 
-        #2、 查询项目公司表id
-        col_list_m, row_list_c = dbutils.execute_sql(order_sql.t_company_transaction_sql.format("'" + ff_acc_no + "'", strutils.remove_bracket(row_list_g)), "查询项目公司流水id")
-        if row_list_c is None or len(row_list_c) <= 0:
-            print("发放账户,ff_acc_no = %s,activity_no = %s,无项目公司流水" % (ff_acc_no, activity_no))
-            raise RuntimeError
-        else:
-            if len(row_list_g) != len(row_list_c):
-                raise TypeError
-            for index, item in enumerate(row_list_c):
-                update_data = {
-                    "data": {
-                        "id": item[0],
-                        "extra": getExtra(activity_no)
-                    }
+        for index ,item in enumerate(row_list_g):
+            update_data = {
+                "data": {
+                    "id": item[1],
+                    "extra": getExtra("YG2110251814CJ67301")
                 }
+            }
 
-                #3、调用接口清洗数据
-                dbutils_prod.execute("/api/migrate/modify/com/trans/data", update_data)
+            # 3、调用接口清洗数据
+            dbutils_prod.execute("/api/migrate/modify/com/trans/data", update_data)
 
-                print("数据清洗成功:{0}".format(update_data))
-
+            print("数据清洗成功:{0}".format(update_data))
 
 def checkActivity(ff_acc_no, activity_no):
     col_list_m, row_list_g = dbutils.execute_sql(order_sql.check_activity_sql.format("'" + activity_no + "'", "'" + ff_acc_no + "'", "'" + getExtra(activity_no) + "'"), "确认是否合格")

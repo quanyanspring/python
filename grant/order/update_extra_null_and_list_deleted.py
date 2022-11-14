@@ -5,7 +5,7 @@ import dbutils_prod as dbutils_prod
 import strutils
 import dbutils
 import WashGrantOrderSql as order_sql
-from ConstansList import activity_no_map
+from ConstansList import company_grant_list_map
 
 # 写入文件
 def print(msg):
@@ -41,7 +41,7 @@ def grantListToCompanyTransaction(ff_acc_no, activity_no):
             print("差别数据大于1000,具体数值:%d" % len(row_list_g))
 
         #2、 查询项目公司表id
-        col_list_m, row_list_c = dbutils.execute_sql(order_sql.t_company_transaction_sql.format("'" + ff_acc_no + "'", strutils.remove_bracket(row_list_g)), "查询项目公司流水id")
+        col_list_m, row_list_c = dbutils.execute_sql(order_sql.t_company_transaction_new_sql.format(strutils.remove_bracket(row_list_g)), "查询项目公司流水id")
         if row_list_c is None or len(row_list_c) <= 0:
             print("发放账户,ff_acc_no = %s,activity_no = %s,无项目公司流水" % (ff_acc_no, activity_no))
             raise RuntimeError
@@ -49,17 +49,34 @@ def grantListToCompanyTransaction(ff_acc_no, activity_no):
             if len(row_list_g) != len(row_list_c):
                 raise TypeError
             for index, item in enumerate(row_list_c):
+                print("id:%d,应该发放账户:%s,实际发放账户:%s" % (item[0], ff_acc_no, item[2]))
                 update_data = {
                     "data": {
                         "id": item[0],
-                        "extra": getExtra(activity_no)
+                        "extra": " "
                     }
                 }
 
-                #3、调用接口清洗数据
+                #3、调用接口清洗项目公司数据
                 dbutils_prod.execute("/api/migrate/modify/com/trans/data", update_data)
+                print("设置t_company_transation,extra = null,成功:{0}".format(update_data))
 
-                print("数据清洗成功:{0}".format(update_data))
+                #4、调用接口设置订单模块数据
+                col_list_m, row_list_l = dbutils.execute_sql(order_sql.t_platform_grant_list_all_sql.format("'" + item[1] + "'"), "查询订单模块数据")
+                if row_list_l is None or len(row_list_l) != 1:
+                    print("发放账户,ff_acc_no = %s,activity_no = %s,无订单模块数据" % (ff_acc_no, activity_no))
+                    raise RuntimeError
+                else:
+                    grant_list_id = row_list_l[0][0]
+                    grant_list_params = {
+                        "id": grant_list_id,
+                        "isDeleted": 1,
+                        "remark": "接口发放错误使用发放账户,活动对应发放账户:{0},实际使用发放账户:{1}".format(ff_acc_no, item[2])
+                    }
+                    dbutils_prod.execute("/api/wash/order/grant/list", grant_list_params)
+                    print("设置t_grang_list,isdeleted = 1,成功:{}".format(grant_list_params))
+
+
 
 
 def checkActivity(ff_acc_no, activity_no):
@@ -84,7 +101,7 @@ def checkActivity(ff_acc_no, activity_no):
 if __name__ == "__main__":
 
     # 循环处理数据
-    for activity_no,ff_acc_no in activity_no_map.items():
+    for activity_no,ff_acc_no in company_grant_list_map.items():
 
         print("发放账户,ff_acc_no = %s,activity_no = %s,清洗数据开始" % (ff_acc_no,activity_no))
 
@@ -94,5 +111,4 @@ if __name__ == "__main__":
         checkActivity(ff_acc_no,activity_no)
 
         print("发放账户,ff_acc_no = %s,activity_no = %s,清洗数据结束\n" % (ff_acc_no,activity_no))
-        # 插入grant_list数据，手动调帐导致 YG2011200932CJ67301
 

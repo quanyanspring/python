@@ -1,7 +1,28 @@
 import datetime
+import os
+
 import DBConfig as config
 import constants
 import dbutils
+
+
+# 写入文件
+def print(msg):
+    path = "/Users/admin/Desktop/订单模块排查/msg_result.json"
+    file = None
+    try:
+        if not os.path.exists(path):
+            file = open(path, mode="a", encoding="utf-8")
+            file.write(msg)
+    except Exception as e:
+        print(e)
+    finally:
+        if file is not None:
+            file.close()
+
+
+
+
 
 #等式二问题确认脚本（调试完毕）
 
@@ -646,8 +667,8 @@ if __name__ == "__main__":
     total_count = 2147483647
     BATCH_SIZE = 100
 
-    start_time = datetime.datetime.strptime('2022-09-09 00:00:00', constants.date_time_format)
-    end_time = datetime.datetime.strptime('2022-09-10 00:00:00', constants.date_time_format)
+    start_time = datetime.datetime.strptime('2022-10-10 00:00:00', constants.date_time_format)
+    end_time = datetime.datetime.strptime('2022-10-15 00:00:00', constants.date_time_format)
     temp_time = start_time
     red_count = 0
     for i in range(total_count):
