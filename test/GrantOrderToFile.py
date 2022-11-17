@@ -1,4 +1,3 @@
-from DBConfig import db_list_info as  db_info_list
 import pandas as pd
 from utils import WriteToExcelUtil as writeUtil
 from GrantOrderFFAccount import is_check_out_ff_acc_no_list
@@ -7,7 +6,6 @@ import GrantListSql as grant_list_sql
 
 if __name__ == "__main__":
 
-    db_info = db_info_list[0]
 
     # 读所有活动与发放账户对应关系数据
     excel = pd.read_excel("/Users/admin/Desktop/export_result.xlsx")
@@ -86,10 +84,10 @@ if __name__ == "__main__":
         ff_acc_no_trans_sum = 0
         ff_acc_no_trans_num = 0
 
-        # if ff_acc_no == "FF-210305-05605" or ff_acc_no == "FF-210910-27129":
-        #     continue
+        if ff_acc_no == "FF-210305-05605" or ff_acc_no == "FF-210910-27129":
+            continue
 
-        if is_check_out_ff_acc_no_list.__contains__(ff_acc_no):
+        if not is_check_out_ff_acc_no_list.__contains__(ff_acc_no):
             continue
 
         index_count += 1
@@ -103,7 +101,7 @@ if __name__ == "__main__":
         if ff_acc_no == "FF-210305-05605" or ff_acc_no == "FF-210910-27129":
             cz_sql = grant_list_sql.account_tmp_ff_cz_sql.format("'" + ff_acc_no + "'")
 
-        col_list_m, row_list_m = dbutils.execute_sql(cz_sql, "查询流水", db_info[1], db_info[2])
+        col_list_m, row_list_m = dbutils.execute_sql(cz_sql, "查询流水")
         if row_list_m is None or len(row_list_m) == 0:
             print("查询充值数据为空:%s" % str(ff_acc_no))
         else:
@@ -146,7 +144,7 @@ if __name__ == "__main__":
         # 查询流水中活动的发放金额
         sum_trans_amount = 0
         extra = '{"activity_no":"%s","source":"platform_grant"}' % (activity_no)
-        col_list_m, row_list_m = dbutils.execute_sql(grant_list_sql.account_ff_ff_sql.format("'" + ff_acc_no + "'","'" + extra + "'"), "查询流水", db_info[1], db_info[2])
+        col_list_m, row_list_m = dbutils.execute_sql(grant_list_sql.account_ff_ff_sql.format("'" + ff_acc_no + "'","'" + extra + "'"), "查询流水")
         if row_list_m is None or len(row_list_m) == 0:
             print("查询发放数据为空:ff_acc_no = %s,activity_no = %s" % (str(ff_acc_no),activity_no))
         else:
@@ -155,7 +153,7 @@ if __name__ == "__main__":
 
         # 查询订单模块中流水的发放金额
         sum_list_amount = 0
-        col_list_m, row_list_m = dbutils.execute_sql(grant_list_sql.account_ff_order_sql.format("'" + activity_no + "'"), "查询流水", db_info[1], db_info[2])
+        col_list_m, row_list_m = dbutils.execute_sql(grant_list_sql.account_ff_order_sql.format("'" + activity_no + "'"), "查询流水")
         if row_list_m is None or len(row_list_m) == 0:
             print("查询订单发放数据为空:ff_acc_no = %s,activity_no = %s" % (str(ff_acc_no), activity_no))
         else:
@@ -169,7 +167,7 @@ if __name__ == "__main__":
                 out_trans_nos = ff_out_trans_no_map[ff_acc_no]
             else:
                 # 查询该发放账户无extra的流水，最多10条
-                col_list_m, row_list_m = dbutils.execute_sql(grant_list_sql.account_ff_out_trans_no_sql.format("'" + ff_acc_no + "'"), "查询流水", db_info[1], db_info[2])
+                col_list_m, row_list_m = dbutils.execute_sql(grant_list_sql.account_ff_out_trans_no_sql.format("'" + ff_acc_no + "'"), "查询流水")
                 if row_list_m is None or len(row_list_m) == 0:
                     print("查询订单发放数据为空:ff_acc_no = %s,activity_no = %s" % (str(ff_acc_no), activity_no))
                 else:
@@ -199,4 +197,4 @@ if __name__ == "__main__":
     result_map["流水号"] = out_trans_no_list
     result_map["是否全部为活动发放"] = ff_acc_no_is_order
 
-    writeUtil.writeToExcel(result_map, "FF-210305-05605-FF-210910-27129", "流水缺失发放编号-部分短缺")
+    writeUtil.writeToExcel(result_map, "活动编号缺失涉及的发放账户_2")

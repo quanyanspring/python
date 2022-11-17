@@ -938,3 +938,7 @@ grant_list_id_list = [
     5159736,
     5163956
 ]
+
+is_checked_activity_no_list = [
+
+]

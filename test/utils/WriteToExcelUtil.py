@@ -3,7 +3,7 @@ import os
 import pandas
 import pandas as pd
 
-def writeToExcel(result,sheet_name,file_name = "流水缺失发放编号详情"):
+def writeToExcel(result,sheet_name,file_name = "流水缺失发放编号详情_checked"):
     file_name = "/Users/admin/Desktop/订单模块排查/%s.xlsx" % file_name
 
     df = pd.DataFrame(result)

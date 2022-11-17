@@ -108,8 +108,8 @@ def dealData(ctDTO):
 if __name__ == "__main__":
 
     params = {
-        "id": 23967404,
-        "activityNo": "YH2201251704CJ88102"
+        "id": 54571215,
+        "isDeleted": 1
     }
     # 3、请求insert接口
     dbutils_prod.execute("/api/wash/order/grant/list", params)

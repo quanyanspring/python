@@ -15,7 +15,7 @@ def execute_sql(sql, detail,toJSon = False):
 
     start_cond = time.time()
     head = {
-        "Cookie": "CASTGC=TGT-565885-BElPen4rUJGoIsRQCL9MJEL3y9iH-faVzdJDa-xujnQaRsHO4IhatqgQD18o9fgCzxU-longhu; account=TGT-565885-BElPen4rUJGoIsRQCL9MJEL3y9iH-faVzdJDa-xujnQaRsHO4IhatqgQD18o9fgCzxU-longhu; sessionid=3pfzmuoggnvmxmuo8j64r1r968unj2wt",
+        "Cookie": "CASTGC=TGT-763171-rrm3wJ91-wfDYC6UQOIjf5uHIzuYFixmlXk1Gdh--5w21zqgTxp6oNqCJnschufP7sI-longhu; account=TGT-763171-rrm3wJ91-wfDYC6UQOIjf5uHIzuYFixmlXk1Gdh--5w21zqgTxp6oNqCJnschufP7sI-longhu; sessionid=ezy3bsjwxnonotz32qw208t2als0liwp",
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
         "Host": "dbaexecsql.longfor.com",
         "Origin": "http: // dbaexecsql.longfor.com",
@@ -53,7 +53,8 @@ def execute_sql(sql, detail,toJSon = False):
 
         data_cont = json_body["data"]
         if "affected_rows" in data_cont and "query_time" in data_cont:
-            print("结果总数：%d，查询时间：%f" % (data_cont["affected_rows"], data_cont["query_time"]))
+            # print("结果总数：%d，查询时间：%f" % (data_cont["affected_rows"], data_cont["query_time"]))
+            pass
 
         if "column_list" not in data_cont:
             print("\n" + sql)

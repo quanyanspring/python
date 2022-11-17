@@ -20,7 +20,7 @@ platform_grant_list_sql = """
                     sum(case when grant_status=1 AND grant_type=2 then refunded_amount else 0 end) refundedAmountSum,
                     sum(case when grant_status=5 AND grant_type=1 then grant_amount else 0 end) unRegistExpiresGrantSum 
                 FROM t_platform_grant_list 
-                WHERE activity_no in {0} AND is_deleted = 0 
+                WHERE activity_no in {0} AND is_deleted = 0
                 GROUP BY activity_no;
             """
 
@@ -77,13 +77,13 @@ account_ff_cz_sql = """
 
 # 发放账户充值
 account_tmp_ff_cz_sql = """
-           SELECT acc_no,trans_amt,serial_number FROM t_company_transaction_tmp WHERE acc_no = {0} AND target_acc_no not regexp 'XF|YH|SH|GLZ' AND `status` = 1 and trans_type = 1 AND is_deleted = 0;
+           SELECT acc_no,trans_amt,serial_number FROM t_company_transaction WHERE acc_no = {0} AND target_acc_no not regexp 'XF|YH|SH|GLZ' AND `status` = 1 and trans_type = 1 AND is_deleted = 0;
          """
 
 # 发放账户流水总额-净发放金额
 account_ff_ff_sql = """
            SELECT acc_no,sum(if(trans_type in (2,6),trans_amt,-trans_amt))
-           FROM t_company_transaction_tmp 
+           FROM t_company_transaction 
            WHERE acc_no = {0} and extra = {1} AND target_acc_no regexp 'XF|YH|SH|GLZ' AND `status` = 1 and is_deleted = 0;
          """
 
@@ -100,6 +100,6 @@ account_ff_order_sql = """
 # 发放账户流水总额-净发放金额
 account_ff_out_trans_no_sql = """
            SELECT out_trans_no
-           FROM t_company_transaction_tmp
+           FROM t_company_transaction
            WHERE acc_no = {0} and target_acc_no regexp 'XF|YH|SH|GLZ' and (extra is null or extra = '') AND `status` = 1 limit 10
          """
