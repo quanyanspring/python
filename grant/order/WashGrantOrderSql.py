@@ -100,3 +100,18 @@ t_platform_grant_list_all_sql = """
 t_platform_grant_list_all_order_by_sql = """
         select * from t_platform_grant_list where activity_no = {0} and id > {1} and is_deleted = 0 and grant_status = 1 order by id asc;
     """
+
+
+"""
+查询项目公司活动编号为空情况
+"""
+t_company_transaction_extra_is_null_sql ="""
+    select * from t_company_transaction where acc_no = {0} and (extra is null or extra = '') and target_acc_no regexp 'YH|XF|GLZ|SH' and is_deleted = 0 and status = 1;
+"""
+
+"""
+查询项目公司活动编号为空情况
+"""
+t_platform_grant_list_is_null_sql ="""
+    select * from t_platform_grant_list where  grant_status = 0 and is_deleted = 0 and wallet_trans_no = {0};
+"""

@@ -33,15 +33,6 @@ class CompanyTransactionDTO:
     accName: str
     oaAccount: str
 
-    @property
-    def oaAccount(self):
-        return self.oaAccount
-
-    @oaAccount.setter
-    def oaAccount(self,oaAccount):
-        self.oaAccount = oaAccount
-
-
     def __init__(self, d):
         self.__dict__ = d
 
@@ -85,6 +76,8 @@ class CompanyTransactionDTO:
                 platformGrantList["receiverPersonAd"] = self.oaAccount
             if self.getattribute("personName") is not None:
                 platformGrantList["receiverPersonName"] = self.personName
+        if self.transType == 1:
+            platformGrantList["grantType"] = 2
         platformGrantList["accNoOut"] = self.targetAccNo,
         platformGrantList["businessType"] = self.businessType,
         if self.getattribute("companyChannel") is not None:
@@ -101,13 +94,3 @@ class CompanyTransactionDTO:
         platformGrantList["modifyUser"] = "system_extra_6",
         platformGrantList["isDeleted"] = 0,
         return platformGrantList
-
-
-if __name__ == "__main__":
-     dto = CompanyTransactionDTO()
-     print(dto)
-
-
-
-
-

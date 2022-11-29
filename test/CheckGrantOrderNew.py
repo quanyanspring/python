@@ -9,6 +9,7 @@ from GrantOrderFFAccount import backwash_check_list
 from GrantOrderFFAccount import normal_ff_list
 from GrantOrderFFAccount import error_ff_acc_no_list
 from GrantOrderFFAccount import exhaust_ff_acc_no_list
+from GrantOrderFFAccount import is_true_ff_acc_no_list
 import GrantListSql as grant_list_sql
 import pandas as pd
 from openpyxl import load_workbook
@@ -194,14 +195,20 @@ if __name__ == "__main__":
         activity_no = excel.iloc[iCol,activity_no_col]
         ff_acc_no = excel.iloc[iCol,ff_acc_no_col]
 
+
+        #排除已经确认的发放账户
+        if is_true_ff_acc_no_list.__contains__(ff_acc_no):
+            continue
+
         # 排出找不到发放账户的活动
-        # if str(ff_acc_no) == 'nan':
-        #     continue
-        # if ff_acc_no == "FF-210803-10873":
-        #     if ff_acc_no_map.__contains__(ff_acc_no):
-        #         ff_acc_no_map[ff_acc_no].append(activity_no)
-        #     else:
-        #         ff_acc_no_map[ff_acc_no] = [activity_no]
+        if str(ff_acc_no) == 'nan':
+            print("ff_acc_no:%,为空" % ff_acc_no)
+            continue
+
+        if ff_acc_no_map.__contains__(ff_acc_no):
+            ff_acc_no_map[ff_acc_no].append(activity_no)
+        else:
+            ff_acc_no_map[ff_acc_no] = [activity_no]
 
         #1、 涉及年末回收涉及的发放账户
         # if backwash_check_list.__contains__(ff_acc_no):
@@ -215,14 +222,14 @@ if __name__ == "__main__":
         #         ff_acc_no_map[ff_acc_no] = [activity_no]
 
         #2、涉及初步合格账户
-        if normal_ff_list.__contains__(ff_acc_no):
-            sheet_name = "FF-210703-08917"
-            if ff_acc_no != "FF-210703-08917":
-                continue
-            if ff_acc_no_map.__contains__(ff_acc_no):
-                ff_acc_no_map[ff_acc_no].append(activity_no)
-            else:
-                ff_acc_no_map[ff_acc_no] = [activity_no]
+        # if normal_ff_list.__contains__(ff_acc_no):
+        #     sheet_name = "FF-210703-08917"
+        #     if ff_acc_no != "FF-210703-08917":
+        #         continue
+        #     if ff_acc_no_map.__contains__(ff_acc_no):
+        #         ff_acc_no_map[ff_acc_no].append(activity_no)
+        #     else:
+        #         ff_acc_no_map[ff_acc_no] = [activity_no]
         #3、问题账户列表
         # if error_ff_acc_no_list.__contains__(ff_acc_no):
         #     sheet_name = "初步排查问题账户"

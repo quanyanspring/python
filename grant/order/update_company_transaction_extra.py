@@ -83,6 +83,16 @@ def checkActivity(ff_acc_no, activity_no):
 
 if __name__ == "__main__":
 
+    ##TODO
+    update_data = {
+        "data": {
+            "id": 42830999,
+            "extra": "{\"activity_no\":\"YH2108061712CJ89401\",\"source\":\"platform_grant\"}"
+        }
+    }
+    # 3、调用接口清洗数据
+    dbutils_prod.execute("/api/migrate/modify/com/trans/data", update_data)
+
     # 循环处理数据
     for activity_no,ff_acc_no in activity_no_map.items():
 

@@ -80,6 +80,10 @@ account_tmp_ff_cz_sql = """
            SELECT acc_no,trans_amt,serial_number FROM t_company_transaction WHERE acc_no = {0} AND target_acc_no not regexp 'XF|YH|SH|GLZ' AND `status` = 1 and trans_type = 1 AND is_deleted = 0;
          """
 
+account_tmp_ff_cz_tmp_sql = """
+           SELECT acc_no,trans_amt,serial_number FROM t_company_transaction_tmp WHERE acc_no = {0} AND target_acc_no not regexp 'XF|YH|SH|GLZ' AND `status` = 1 and trans_type = 1 AND is_deleted = 0;
+         """
+
 # 发放账户流水总额-净发放金额
 account_ff_ff_sql = """
            SELECT acc_no,sum(if(trans_type in (2,6),trans_amt,-trans_amt))
