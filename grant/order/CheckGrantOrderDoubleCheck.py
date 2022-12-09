@@ -171,7 +171,7 @@ if __name__ == "__main__":
     transation_sum_map = dict()
     grant_method_map = dict()
     is_grant_flag_map = dict()
-    sheet_name = "Sheet1"
+    sheet_name = "FF-210803-10873"
     for iCol in range(ncols):
         ff_acc_no = excel.iloc[iCol,0]
         activity_no = excel.iloc[iCol,1]
@@ -179,6 +179,9 @@ if __name__ == "__main__":
         transation_sum_map[activity_no] = excel.iloc[iCol,3]
         grant_list_sum_map[activity_no] = excel.iloc[iCol,4]
         is_grant_flag_map[activity_no] = excel.iloc[iCol,5]
+
+        if ff_acc_no != 'FF-210803-10873':
+            continue
 
         if ff_acc_no_map.__contains__(ff_acc_no):
             ff_acc_no_map[ff_acc_no].append(activity_no)

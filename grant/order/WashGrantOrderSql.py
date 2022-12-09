@@ -5,7 +5,7 @@ t_platform_grant_list_sql = """
         select t.* from
                 (select wallet_trans_no from t_platform_grant_list where is_deleted = 0
               and grant_status = 1
-              and activity_no = {0} and id >= 1370928 and id <= 23777703) t
+              and activity_no = {0}) t
         left join (select out_trans_no,id from t_company_transaction where acc_no = {1}
               and target_acc_no regexp 'XF|SH|YH|GLZ'
               and is_deleted = 0 and status = 1
@@ -13,7 +13,7 @@ t_platform_grant_list_sql = """
         where tt.id is null;        
     """
 
-t_platform_grant_list_right_sql = """
+t_platform_grant_sql = """
         select tt.*
         from (select wallet_trans_no,id
               from t_platform_grant_list
@@ -30,6 +30,41 @@ t_platform_grant_list_right_sql = """
         where t.id is null;       
     """
 
+t_platform_grant_list_right_sql = """
+        select tt.*
+        from (select wallet_trans_no,id
+              from t_platform_grant_list
+              where is_deleted = 0
+                and grant_status = 1
+                and activity_no = {0}) t
+                 right join (select out_trans_no, id
+                            from t_company_transaction
+                            where acc_no = {1}
+                              and target_acc_no regexp 'XF|SH|YH|GLZ'
+                              and is_deleted = 0 and status = 1
+                              and extra = {2} and id >= {3} and id <= {4}) tt
+                           on tt.out_trans_no = t.wallet_trans_no
+        where t.id is null;       
+    """
+
+t_platform_grant_list_right_id_sql = """
+        select min(r.id),max(r.id) from
+        (select tt.*
+        from (select wallet_trans_no,id
+              from t_platform_grant_list
+              where is_deleted = 0
+                and grant_status = 1
+                and activity_no = {0}) t
+                 right join (select out_trans_no, id
+                            from t_company_transaction
+                            where acc_no = {1}
+                              and target_acc_no regexp 'XF|SH|YH|GLZ'
+                              and is_deleted = 0 and status = 1
+                              and extra = {2} and id > {3}) tt
+                           on tt.out_trans_no = t.wallet_trans_no
+        where t.id is null order by tt.id asc limit 1000) r;       
+    """
+
 """
 查询流水id
 """
@@ -41,7 +76,7 @@ t_company_transaction_sql = """
 查询流水id
 """
 t_company_transaction_new_sql = """
-        select id,out_trans_no,acc_no from t_company_transaction where out_trans_no in ({0}) and acc_no like 'FF%'
+        select id,out_trans_no,acc_no from t_company_transaction where out_trans_no in ({0}) and acc_no like 'FF%' and is_deleted = 0 and status = 1;
     """
 
 """

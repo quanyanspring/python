@@ -221,15 +221,15 @@ if __name__ == "__main__":
     activity_no_col = 0
     ff_acc_no_col = 2
     ff_acc_no_map = dict()
-    sheet_name = "Sheet5"
+    sheet_name = "FF-210626-08786"
     for iCol in range(ncols):
         activity_no = excel.iloc[iCol,activity_no_col]
         ff_acc_no = excel.iloc[iCol,ff_acc_no_col]
 
         #排除已经确认的发放账户
-        if is_true_ff_acc_no_list.__contains__(ff_acc_no):
-            continue
-        if ff_acc_no != "FF-210618-08684":
+        # if is_true_ff_acc_no_list.__contains__(ff_acc_no):
+        #     continue
+        if ff_acc_no != "FF-210626-08786":
             continue
 
         # 排出找不到发放账户的活动

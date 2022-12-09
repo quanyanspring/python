@@ -33,13 +33,13 @@ if __name__ == "__main__":
     #
     # dbutils_prod.execute("/api/wash/order/grant/clear", params)
 
-    # # 删除 t_account_ff_clear_transaction
-    # params = {
-    #     "id": 188,
-    #     "clearAmt": 13
-    # }
-    #
-    # dbutils_prod.execute("/api/wash/order/ff/clear", params)
+    # 删除 t_account_ff_clear_transaction
+    params = {
+        "id": 362,
+        "clearAmt": 5087
+    }
+
+    dbutils_prod.execute("/api/wash/order/ff/clear", params)
 
     # 循环处理数据
     for activity_no, amount in grant_clear_activity_no_map.items():

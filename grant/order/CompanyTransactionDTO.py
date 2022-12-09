@@ -78,6 +78,10 @@ class CompanyTransactionDTO:
                 platformGrantList["receiverPersonName"] = self.personName
         if self.transType == 1:
             platformGrantList["grantType"] = 2
+            platformGrantList["refundedAmount"] = self.transAmt
+        else:
+            platformGrantList["grantType"] = 1
+            platformGrantList["refundedAmount"] = 0
         platformGrantList["accNoOut"] = self.targetAccNo,
         platformGrantList["businessType"] = self.businessType,
         if self.getattribute("companyChannel") is not None:

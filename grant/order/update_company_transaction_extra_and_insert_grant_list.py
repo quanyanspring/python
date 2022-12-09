@@ -15,7 +15,7 @@ import Sequence as sequence
 
 # 写入文件
 def print(msg):
-    path = "/Users/admin/Desktop/订单模块排查/company_and_grant_1.json"
+    path = "/Users/admin/Desktop/订单模块排查/FF-210626-08786.json"
     file = None
     try:
         # if not os.path.exists(path):
@@ -48,8 +48,14 @@ def grantListToCompanyTransaction(ff_acc_no,activity_no):
         if len(row_list_g) >= 1000:
             print("差别数据大于1000,具体数值:%d" % len(row_list_g))
 
+        # amount = 1499900
         #2、 查询项目公司表id
         for index,item in enumerate(row_list_g):
+
+            # amount -= item[8]
+            # if amount < 0:
+            #     break
+            # print("本次金額:{1},剩餘金額:{0}".format(amount, item[8]))
 
             update_data = {
                 "data": {
@@ -217,21 +223,21 @@ if __name__ == "__main__":
     # activity_no = "YH2112171417CJ68001"
 
     # 循环处理数据
-    for ff_acc_no,activity_no in ff_acc_no_list.items():
+    for ff_acc_no, activity_no in ff_acc_no_list.items():
 
         print("发放账户,ff_acc_no = %s,清洗数据开始" % (ff_acc_no))
 
         #1、清洗项目公司数据
         wallet_trans_no_list = grantListToCompanyTransaction(ff_acc_no, activity_no)
 
-        #2、清洗grant_list
-        if wallet_trans_no_list == None or len(wallet_trans_no_list) < 1:
-            raise AttributeError
-        for wallet_trans_no in wallet_trans_no_list:
-            insertGrantList(wallet_trans_no)
+        # #2、清洗grant_list
+        # if wallet_trans_no_list == None or len(wallet_trans_no_list) < 1:
+        #     raise AttributeError
+        # for wallet_trans_no in wallet_trans_no_list:
+        #     insertGrantList(wallet_trans_no)
 
-        #3、确认数据
-        checkActivity(ff_acc_no,activity_no)
+        # #3、确认数据
+        # checkActivity(ff_acc_no,activity_no)
 
         print("发放账户,ff_acc_no = %s,清洗数据结束\n" % (ff_acc_no))
 
