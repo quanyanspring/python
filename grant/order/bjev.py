@@ -179,7 +179,7 @@ def dynamicList(pageIndex=1, pageSize=20):
             # 关注
             if not fans_User_id_list.__contains__(userId):
                 if followed < 3:
-                    # followings(userId)
+                    followings(userId)
                     followed += 1
 
         if liked <= 5:
