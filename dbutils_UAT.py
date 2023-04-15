@@ -9,7 +9,6 @@ server = "http://dbaexecsql.longfor.com/data_application/app_query/"
 
 
 def execute_select_sql_uat(sql, db_config):
-    # db = pymysql.connect(host="10.31.99.227",port=3306, user="root", password="123456aA!", database="uat_wallet")
     try:
         db = pymysql.connect(host=db_config[1],
                              port=db_config[2],

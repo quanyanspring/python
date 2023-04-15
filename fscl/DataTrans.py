@@ -4,14 +4,14 @@ import pandas as pd
 # 创建一个MySQL数据库的连接对象
 conn_dev = pymysql.connect(
     host='210.65.47.53', port=3309,
-    user='fashuichangliu', password='dklajgpi[wSOVkllkxcvnigrwewsd',
-    charset='utf8mb4',database="fashuichangliu"
+    user='', password='',
+    charset='utf8mb4',database=""
 )
 
 conn_prod = pymysql.connect(
     host='210.65.47.53', port=3309,
-    user='fashuichangliunew', password='hvsVHDLfjoepqoweowuu2ehqdbaj',
-    charset='utf8mb4',database="fashuichangliunew"
+    user='', password='',
+    charset='utf8mb4',database=""
 )
 
 """
