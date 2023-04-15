@@ -36,7 +36,7 @@ def execute_sql(sql, detail, instance, db_name, limit_num=1000):
 def execute(sql, detail, instance, db_name, limit_num):
     start_cond = time.time()
     head = {
-        "Cookie": "CASTGC=TGT-796362-qMZu-hFYfGF3tsR3tBoOIfPZl-PfHTzo4jp5bpb-V6MjgBF4ypr912klN6Izal5b8m4-longhu; account=TGT-796362-qMZu-hFYfGF3tsR3tBoOIfPZl-PfHTzo4jp5bpb-V6MjgBF4ypr912klN6Izal5b8m4-longhu; sessionid=qwuiv0acru43ze62kkoorlvue9di10jq",
+        "Cookie": "",
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
     }
     # 去除换行

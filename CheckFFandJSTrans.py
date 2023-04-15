@@ -31,7 +31,7 @@ def execute_tidb_sql(sql, instance="tidb10.31.48.7_脱敏查询", db_name="longe
 def execute_sql(sql, detail, instance, db_name):
     start_cond = time.time()
     head = {
-        "Cookie": "CASTGC=TGT-1340816-g4hHIa9ngEuUqjmKoU9HrwYTx0en1Nqka8Cm0u36sgp9k8VAc7Y6JUQ1WLQ6YRu2O3E-longhu; account=TGT-1340816-g4hHIa9ngEuUqjmKoU9HrwYTx0en1Nqka8Cm0u36sgp9k8VAc7Y6JUQ1WLQ6YRu2O3E-longhu; sessionid=lkz6ix4wfbw8mjhcbqjo1blbe7xsuvxr",
+        "Cookie": "",
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
     }
     # 去除换行

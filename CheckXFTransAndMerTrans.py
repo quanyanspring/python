@@ -42,7 +42,7 @@ def execute_sql(sql, detail, instance, db_name, limit_num=1000):
 def execute(sql, detail, instance, db_name, limit):
     start_cond = time.time()
     head = {
-        "Cookie": "rd_pic_tkn=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyZWFsTmFtZSI6IueOi-ael-WFqCIsInVzZXJJbmZvIjoie1wicG9ydHJhaXRVcmxcIjpcImh0dHBzOi8vcHJvZC1sb25neGluLW9zcy5vc3MtY24tYmVpamluZy5hbGl5dW5jcy5jb20vb3JpZ2luYWwtbmFzLXByby9oZWFkSW1nezF9NjAwMDMyOTE5LmpwZz9oZWFkSWQ9MTAwMDFcIixcInNleFwiOjEsXCJkZXB0SW5mb1wiOlt7XCJkZXB0c1wiOlt7XCJiaXpJZFwiOlwiMTAwMDAwMDAwM1wiLFwibmFtZVwiOlwi6b6Z5rmW6ZuG5ZuiXCJ9LHtcImJpeklkXCI6XCIxMDAwMDAwMDcxXCIsXCJuYW1lXCI6XCLmlbDlrZfnp5HmioDpg6hcIn0se1wiYml6SWRcIjpcIjYwMDAwNDU2ODhcIixcIm5hbWVcIjpcIuWkp-S8muWRmOWSjOePkeePoOWboumYn1wifSx7XCJiaXpJZFwiOlwiNjAwMDE2OTk1NFwiLFwibmFtZVwiOlwi5oqA5pyv5Zui6ZifXCJ9LHtcImJpeklkXCI6XCI2MDAwMTY5OTYxXCIsXCJuYW1lXCI6XCLmnrbmnoTnu4RcIn1dLFwiaXNNYWluXCI6MSxcImpvYlwiOlwi5p625p6E5ZGY5belXCJ9XX0iLCJleHBpcmVUaW1lIjoxNjQxNDUzNzc5NTEwLCJyb2xlQ29kZSI6IjEiLCJpc3MiOiLnjovmnpflhagiLCJ1c2VySWQiOiJ3YW5nbGlucXVhbiIsImZpbGVJZCI6ImVaSE1wa3gyVHRtbjNwNGNOTTVVVGRQOUZkSXUifQ.b2SbFE5GezPVyQLXPaautPbqwVo1x6Q-8USMNWc1Bms; CASTGC=TGT-835180-KXAboV7BkVUqwKnyBlMi-lKAmCNxxchcrbW7QKxjpG8LtdjMiC7NBcnjncOzBo0uaRE-longhu; account=TGT-835180-KXAboV7BkVUqwKnyBlMi-lKAmCNxxchcrbW7QKxjpG8LtdjMiC7NBcnjncOzBo0uaRE-longhu; sessionid=uibhc7spii6s0hhho4r5jcckw3nuamo3",
+        "Cookie": "",
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
     }
     # 去除换行

@@ -244,7 +244,7 @@ def readTalkData(conn):
 """
 def updateCatalogueCount(conn):
     select_article_count_sql = """
-        select catalogue_id,count(*) from t_article_inf group by catalogue_id;
+        select catalogue_id,count(*) from t_article_inf where is_delete = 0 group by catalogue_id;
     """
     update_catalogue_count_sql = """
         update t_catalogue_inf set resource_count = {0} where id = {1};

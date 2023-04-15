@@ -31,7 +31,7 @@ def execute_tidb_sql(sql, instance="tidb10.31.48.7_脱敏查询", db_name="longe
 def execute_sql(sql, detail, instance, db_name):
     start_cond = time.time()
     head = {
-        "Cookie": "zg_87d550a769cd4f4995a2da640d7869f7=%7B%22sid%22%3A%201639576658776%2C%22updated%22%3A%201639576664352%2C%22info%22%3A%201639576658779%2C%22superProperty%22%3A%20%22%7B%5C%22%E5%BA%94%E7%94%A8%E5%90%8D%E7%A7%B0%5C%22%3A%20%5C%22%E9%BE%99%E4%BF%A13.0%5C%22%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%2C%22landHref%22%3A%20%22https%3A%2F%2Foriginal-nas-pro.longfor.com%2Foriginal-nas-pro%2FapplicationMedia%2F1637227663740.html%3FExpires%3D1952587666%26OSSAccessKeyId%3DLTAI4Fw2dUgQvkWHnasff6ps%26Signature%3DiAnb9ursRD5lBbMig6hjQTZ7cGc%253D%23%2Fmain%2Fportal%2Fportal-1-1%22%7D; csrftoken=JkqBk4Hs0fa7WS6iV5VJkUxSLl32aA512JQnVHmDHDI2GBMzvdJPe8lXdeui1qAE; CASTGC=TGT-18135-Z97atyO-i261eEpYO2nvxcGgc7WTa6OnlFKsB5rXL56T0M4WKeNZNl9nGIEXa4f2zyM-longhu; account=TGT-18135-Z97atyO-i261eEpYO2nvxcGgc7WTa6OnlFKsB5rXL56T0M4WKeNZNl9nGIEXa4f2zyM-longhu; sessionid=rqy14o0uwj90umuob69c3p2t6ikkdzzf",
+        "Cookie": "",
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
     }
     # 去除换行

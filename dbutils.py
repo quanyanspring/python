@@ -15,7 +15,7 @@ def execute_sql(sql, detail,toJSon = False):
 
     start_cond = time.time()
     head = {
-        "Cookie": "CASTGC=TGT-1221529-mEg1tB8wrbEWggwqLU8BpyqN-EcAXn4mR4A7-k48bRtQWi5PZJfXx6QhWBc2ZbpB80A-longhu; account=TGT-1221529-mEg1tB8wrbEWggwqLU8BpyqN-EcAXn4mR4A7-k48bRtQWi5PZJfXx6QhWBc2ZbpB80A-longhu; sessionid=ckcnrx8cllyq9lgz0tf45jsrl27igsq4",
+        "Cookie": "",
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
         "Host": "dbaexecsql.longfor.com",
         "Origin": "http: // dbaexecsql.longfor.com",
