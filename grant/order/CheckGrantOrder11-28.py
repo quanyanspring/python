@@ -6,7 +6,6 @@ import pandas as pd
 
 import dbutils
 import test.GrantListSql as grant_list_sql
-from DBConfig import db_list_info as  db_info_list
 from test.GrantOrderFFAccount import is_true_ff_acc_no_list
 
 print_rersult_list = []
@@ -14,7 +13,7 @@ print_rersult_list = []
 # 打印到文件
 
 def writeToExcel(result,sheet_name):
-    file_name = "/Users/admin/Desktop/订单模块排查/活动维度排查结果_11-28_王林全.xlsx"
+    file_name = "/Users/admin/Desktop/订单模块排查/活动维度排查结果_12-20.xlsx"
 
     df = pd.DataFrame(result)
     if not os.path.exists(file_name):
@@ -28,7 +27,7 @@ def writeToExcel(result,sheet_name):
             df.to_excel(write, sheet_name, index=False, encoding="utf8")
             write.save()
 
-def checkGrantOrder(db_info,ff_acc_no, activity_no_list,activity_no_map):
+def checkGrantOrder(ff_acc_no, activity_no_list,activity_no_map):
 
     activity_no_sql = "(" + json.dumps(activity_no_list).replace("[","").replace("]","").replace('"',"'") + ")"
 
@@ -214,14 +213,12 @@ def checkGrantOrder(db_info,ff_acc_no, activity_no_list,activity_no_map):
 
 if __name__ == "__main__":
 
-    db_info = db_info_list[0]
-
     excel = pd.read_excel("/Users/admin/Desktop/订单模块排查/activityNoAcc.xlsx", sheet_name="Sheet1")
     ncols = excel.shape[0]
     activity_no_col = 0
     ff_acc_no_col = 2
     ff_acc_no_map = dict()
-    sheet_name = "FF-210626-08786"
+    sheet_name = "FF-210305-05605"
     for iCol in range(ncols):
         activity_no = excel.iloc[iCol,activity_no_col]
         ff_acc_no = excel.iloc[iCol,ff_acc_no_col]
@@ -229,7 +226,7 @@ if __name__ == "__main__":
         #排除已经确认的发放账户
         # if is_true_ff_acc_no_list.__contains__(ff_acc_no):
         #     continue
-        if ff_acc_no != "FF-210626-08786":
+        if ff_acc_no != "FF-210305-05605":
             continue
 
         # 排出找不到发放账户的活动
@@ -279,7 +276,7 @@ if __name__ == "__main__":
         #     break
 
         print("发放账户:%s,开始" % ff_acc_no)
-        checkGrantOrder(db_info,ff_acc_no,activity_no_list,activity_no_map)
+        checkGrantOrder(ff_acc_no,activity_no_list,activity_no_map)
         print("发放账户:%s,结束" % ff_acc_no)
 
     result_map["发放账户"] = ff_acc_no_list

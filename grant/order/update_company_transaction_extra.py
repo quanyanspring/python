@@ -83,15 +83,28 @@ def checkActivity(ff_acc_no, activity_no):
 
 if __name__ == "__main__":
 
+    id_list = [
+        269631088,
+        269631091,
+        269631095,
+        269653304,
+        269653309,
+        269659465,
+        269659471,
+        269659475,
+        269659668
+    ]
+
     ##TODO
-    # update_data = {
-    #     "data": {
-    #         "id": 304836365,
-    #         "extra": "{\"activity_no\":\"YH2112201450CJ66102\",\"source\":\"platform_grant\"}"
-    #     }
-    # }
-    # # 3、调用接口清洗数据
-    # dbutils_prod.execute("/api/migrate/modify/com/trans/data", update_data)
+    for id in id_list:
+        update_data = {
+            "data": {
+                "id": id,
+                "extra": "{\"activity_no\":\"YH2209201340CJ35401\",\"source\":\"platform_grant\"}"
+            }
+        }
+        # 3、调用接口清洗数据
+        dbutils_prod.execute("/api/migrate/modify/com/trans/data", update_data)
 
     # 循环处理数据
     for activity_no,ff_acc_no in activity_no_map.items():

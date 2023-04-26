@@ -150,12 +150,29 @@ def checkActivity(ff_acc_no, activity_no):
 
 # if __name__ == "__main__":
 def insertGrantList(minId = 0, maxId = 0):
-    # params = {
-    #     "id": 57178992,
-    #     "refundedAmount": 660
-    # }
-    # # 3、请求insert接口
-    # dbutils_prod.execute("/api/wash/order/grant/list", params)
+    id_list = [
+        59443245,
+        59443248,
+        59443249,
+        59443250,
+        59443251,
+        59443240,
+        59443243,
+        59443244,
+        59427591,
+        59427598,
+        59427602,
+        59443246,
+        59443241,
+        59443247
+    ]
+    for id in id_list:
+        params = {
+            "id": id,
+            "grantStatus": 1
+        }
+        # 3、请求insert接口
+        dbutils_prod.execute("/api/wash/order/grant/list", params)
     # 1、 查询差异数据
     activity_no = 'YH2112300936CJ72001'
     ff_acc_no = 'FF-210626-08786'

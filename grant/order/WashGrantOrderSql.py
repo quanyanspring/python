@@ -98,6 +98,22 @@ check_activity_sql = """
     """
 
 """
+查询发放账户有多少个活动
+"""
+select_budget_appply_ff_acc_no_sql = """
+    select * from t_platform_grant_budget_apply where grant_acc_no = {0} and is_deleted = 0;
+"""
+
+"""
+查询发放账户有多少个活动
+"""
+select_budget_appply_ff_acc_sql = """
+    select apply.activity_no,apply.grant_acc_no,activity.grant_method,activity.activity_status from t_platform_grant_budget_apply apply
+    JOIN t_platform_grant_activity  activity on activity.activity_no = apply.activity_no
+    where apply.fk_preuse_id is NOT null and apply.grant_acc_no is NOT null
+"""
+
+"""
 项目公司流水
 """
 t_company_transaction_by_out_trans_no_sql = """

@@ -8,12 +8,13 @@ import dbutils
 import test.GrantListSql as grant_list_sql
 from DBConfig import db_list_info as  db_info_list
 from WashGrantOrderSql import check_activity_sql
+import WashGrantOrderSql as sql
 
 print_rersult_list = []
 
 # 打印到文件
 def writeToExcel(result,sheet_name):
-    file_name = "/Users/admin/Desktop/订单模块排查/活动维度排查结果_2022_11_25.xlsx"
+    file_name = "/Users/admin/Desktop/订单模块排查/活动维度排查结果_2022_12_29.xlsx"
 
     df = pd.DataFrame(result)
     if not os.path.exists(file_name):
@@ -29,7 +30,7 @@ def writeToExcel(result,sheet_name):
 
 # 写入文件
 def print(msg):
-    path = "/Users/admin/Desktop/订单模块排查/msg_result_12_20.json"
+    path = "/Users/admin/Desktop/订单模块排查/msg_result_12_29.json"
     file = None
     try:
         # if not os.path.exists(path):
@@ -54,6 +55,10 @@ def checkGrantOrder(ff_acc_no, activity_no_list):
         for index, item in enumerate(row_list_m):
             activity_no_budget_map[item[0]] = item
 
+    # 判断是否全部为订单发放
+    is_grant_flag_map = dict()
+    for activity_no in activity_no_list:
+        is_grant_flag_map[activity_no] = 0
 
     # 订单模块流水
     activity_no_sum_map = dict()
@@ -117,9 +122,9 @@ def checkGrantOrder(ff_acc_no, activity_no_list):
         ff_acc_no_list.append(ff_acc_no)
         activity_nos.append(activity_no)
         is_grant_flag_list.append(is_grant_flag_map[activity_no])
-        grant_method_name_list.append(grant_method_map[activity_no])
+        grant_method_name_list.append("-")
         apply_amount_list.append(applyAmount)
-        transation_sum_bd_list.append(transation_sum_map[activity_no])
+        transation_sum_bd_list.append("-")
         done_grant_sum_bd_list.append(doneGrantSumBd)
         refunded_amount_sum_list.append(refundedAmountSum)
         fail_grant_sum_Bbd_list.append(failGrantSumBd)
@@ -198,31 +203,19 @@ if __name__ == "__main__":
 
     db_info = db_info_list[0]
 
-    excel = pd.read_excel("/Users/admin/Desktop/订单模块排查/流水缺失发放编号详情_checked.xlsx", sheet_name="活动编号缺失涉及的发放账户")
-    ncols = excel.shape[0]
-    ff_acc_no_col = 0
-    activity_no_col = 1
+    ff_acc_no = "FF-200727-01740"
+
     ff_acc_no_map = dict()
-    grant_list_sum_map = dict()
-    transation_sum_map = dict()
-    grant_method_map = dict()
-    is_grant_flag_map = dict()
-    sheet_name = "FF-210803-10873"
-    for iCol in range(ncols):
-        ff_acc_no = excel.iloc[iCol,0]
-        activity_no = excel.iloc[iCol,1]
-        grant_method_map[activity_no] = excel.iloc[iCol,2]
-        transation_sum_map[activity_no] = excel.iloc[iCol,3]
-        grant_list_sum_map[activity_no] = excel.iloc[iCol,4]
-        is_grant_flag_map[activity_no] = excel.iloc[iCol,5]
-
-        if ff_acc_no != 'FF-210305-05605':
-            continue
-
-        if ff_acc_no_map.__contains__(ff_acc_no):
-            ff_acc_no_map[ff_acc_no].append(activity_no)
-        else:
-            ff_acc_no_map[ff_acc_no] = [activity_no]
+    col_list_m, row_list_g = dbutils.execute_sql(sql.select_budget_appply_ff_acc_no_sql.format("'" + ff_acc_no + "'"),"查询活动")
+    if row_list_g is None and len(row_list_g) <= 0:
+        raise TypeError
+    else:
+        for item in row_list_g:
+            activity_no = item[1]
+            if ff_acc_no_map.__contains__(ff_acc_no):
+                ff_acc_no_map[ff_acc_no].append(activity_no)
+            else:
+                ff_acc_no_map[ff_acc_no] = [activity_no]
 
     # 待发放金额 = 申请金额 - 已发金额 - 未注册待发放 - 已回冲金额 - 回冲中 - 销账金额
     result_map = dict()
@@ -243,21 +236,20 @@ if __name__ == "__main__":
     status_list = []
 
 
-    for ff_acc_no,activity_no_list in ff_acc_no_map.items():
-        if activity_no_list is not None and len(activity_no_list) > 0:
-            for activity_no in activity_no_list:
-                checkActivity(ff_acc_no, activity_no)
-
+    # for ff_acc_no,activity_no_list in ff_acc_no_map.items():
+    #     if activity_no_list is not None and len(activity_no_list) > 0:
+    #         for activity_no in activity_no_list:
+    #             checkActivity(ff_acc_no, activity_no)
+    ff_acc_no_map = dict()
+    ff_acc_no_map['FF-210910-27129'] = ['YH2301031519CJ58701']
 
     index_flag = 0
     for ff_acc_no,activity_no_list in ff_acc_no_map.items():
         index_flag+=1
         print("当前条数:%d" % index_flag)
-        # if index_flag == 2:
-        #     break
         print("发放账户:%s,开始" % ff_acc_no)
+        ## 核心查询逻辑
         checkGrantOrder(ff_acc_no,activity_no_list)
-
         print("发放账户:%s,结束" % ff_acc_no)
 
 
@@ -277,5 +269,5 @@ if __name__ == "__main__":
     result_map["待发放金额"] = available_grantSum_list
     result_map["状态"] = status_list
 
-    writeToExcel(result_map,sheet_name)
+    writeToExcel(result_map,ff_acc_no)
 
