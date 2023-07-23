@@ -1,8 +1,4 @@
-import datetime
-
-import constants
-import dbutils
-import dbutils_uat as dbutils_uat
+from test.longfor import constants, dbutils
 import dbutils_prod as dbutils_prod
 from ConstansList import grant_clear_activity_no_map
 from datetime import datetime

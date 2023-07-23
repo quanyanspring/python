@@ -1,9 +1,5 @@
-import os
-
-import dbutils_uat as dbutils_uat
 import dbutils_prod as dbutils_prod
-import strutils
-import dbutils
+from test.longfor import strutils, dbutils
 import WashGrantOrderSql as order_sql
 from ConstansList import company_grant_list_map
 
@@ -41,7 +37,8 @@ def grantListToCompanyTransaction(ff_acc_no, activity_no):
             print("差别数据大于1000,具体数值:%d" % len(row_list_g))
 
         #2、 查询项目公司表id
-        col_list_m, row_list_c = dbutils.execute_sql(order_sql.t_company_transaction_new_sql.format(strutils.remove_bracket(row_list_g)), "查询项目公司流水id")
+        col_list_m, row_list_c = dbutils.execute_sql(order_sql.t_company_transaction_new_sql.format(
+            strutils.remove_bracket(row_list_g)), "查询项目公司流水id")
         if row_list_c is None or len(row_list_c) <= 0:
             print("发放账户,ff_acc_no = %s,activity_no = %s,无项目公司流水" % (ff_acc_no, activity_no))
             raise RuntimeError

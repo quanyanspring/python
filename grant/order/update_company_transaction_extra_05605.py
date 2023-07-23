@@ -1,9 +1,5 @@
-import os
-
-import dbutils_uat as dbutils_uat
 import dbutils_prod as dbutils_prod
-import strutils
-import dbutils
+from test.longfor import dbutils
 import WashGrantOrderSql as order_sql
 from ConstansList import activity_no_map
 
@@ -34,7 +30,7 @@ def grantListToCompanyTransaction(ff_acc_no, activity_no):
     #TODO max_id = 16898955
     max_id = 16898955
     while True:
-        col_list_m, row_list_g = dbutils.execute_sql(order_sql.t_platform_grant_list_all_order_by_sql.format("'" + activity_no + "'",max_id), "查询差异流水")
+        col_list_m, row_list_g = dbutils.execute_sql(order_sql.t_platform_grant_list_all_order_by_sql.format("'" + activity_no + "'", max_id), "查询差异流水")
         if row_list_g is None or len(row_list_g) <= 0:
             print("发放账户,ff_acc_no = %s,activity_no = %s,无差别数据" % (ff_acc_no, activity_no))
             break

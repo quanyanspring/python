@@ -1,7 +1,6 @@
 import DBConfig as config
 import dbutils
-import constants
-import datetime
+
 
 def select_sql(params,arr_4):
     params_sql_1 = params_sql.format(params)

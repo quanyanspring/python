@@ -1,20 +1,13 @@
 import json
-import threading
 
 import CompanyTransactionDTO as com
-import os
 
-import dbutils_uat as dbutils_uat
 import dbutils_prod as dbutils_prod
-import strutils
-import dbutils
+from test.longfor import dbutils
 import WashGrantOrderSql as order_sql
-from ConstansList import wallet_trans_no_list
-from ConstansList import grant_list_id_list
 import Sequence as sequence
 import time
 import threading as Thread
-from concurrent.futures import ThreadPoolExecutor
 
 
 # 写入文件

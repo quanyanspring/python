@@ -1,8 +1,7 @@
-from DBConfig import db_list_info as  db_info_list
-import dbutils
+from test.longfor.DBConfig import db_list_info as  db_info_list
+from test.longfor import dbutils
 import json
 import requests
-from GrantOrderFFAccount import except_acc_no_list as except_acc_no_list
 from GrantOrderFFAccount import not_check_list as not_check_list
 from decimal import Decimal
 
@@ -106,7 +105,7 @@ def checkGrantOrder(db_info, ff_acc_no):
     activity_no_sum_map[ff_acc_no] = Decimal("0")
     while True:
         # 查询流水
-        col_list_m, row_list_m = dbutils.execute_sql(ff_company_transaction_sql.format(start_id, page_limit, "'" + ff_acc_no + "'"), "查询流水", db_info[1],db_info[2])
+        col_list_m, row_list_m = dbutils.execute_sql(ff_company_transaction_sql.format(start_id, page_limit, "'" + ff_acc_no + "'"), "查询流水", db_info[1], db_info[2])
         if row_list_m is None or len(row_list_m) == 0:
             break
         else:
@@ -182,12 +181,12 @@ def checkGrantOrder(db_info, ff_acc_no):
     # 校验预算申请
     budget_amount = 0
     for activity_no in activity_no_map.keys():
-        col_list_m, row_list_m = dbutils.execute_sql(platform_grant_budget_apply_sql.format("'" + activity_no + "'"),"查询流水", db_info[1], db_info[2])
+        col_list_m, row_list_m = dbutils.execute_sql(platform_grant_budget_apply_sql.format("'" + activity_no + "'"), "查询流水", db_info[1], db_info[2])
         if row_list_m is None or len(row_list_m) == 0:
             print("activity_no:%s,查询预算为空" % activity_no)
         else:
             # 校验grant_list汇总总额
-            col_list, row_list = dbutils.execute_sql(platform_grant_sum_sql.format("'" + activity_no + "'"),"查询流水", db_info[1], db_info[2])
+            col_list, row_list = dbutils.execute_sql(platform_grant_sum_sql.format("'" + activity_no + "'"), "查询流水", db_info[1], db_info[2])
 
             if row_list is None or len(row_list) == 0:
                 print("activity_no:%s,查询grant_list汇总总额为空" % activity_no)
@@ -311,7 +310,7 @@ def checkGrantOrder(db_info, ff_acc_no):
 def queryGrantOrderByFFAccNo(acc_no_list,sql):
     # 查询发放账户的问题
     try:
-        col_list_m, row_list_m = dbutils.execute_sql(sql.format("(" + json.dumps(acc_no_list).replace("[", "").replace("]", "") + ")"),"查询流水", db_info[1], db_info[2])
+        col_list_m, row_list_m = dbutils.execute_sql(sql.format("(" + json.dumps(acc_no_list).replace("[", "").replace("]", "") + ")"), "查询流水", db_info[1], db_info[2])
         if row_list_m is None or len(row_list_m) == 0:
             pass
         else:

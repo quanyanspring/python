@@ -1,7 +1,5 @@
 import DBConfig as config
 import dbutils
-import constants
-import datetime
 
 
 def select_sql(sql):

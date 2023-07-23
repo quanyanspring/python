@@ -1,8 +1,5 @@
-import pandas as pd
-import dbutils
-import os
+from test.longfor import dbutils
 import dbutils_prod
-import dbutils_uat
 
 if __name__ == "__main__":
 

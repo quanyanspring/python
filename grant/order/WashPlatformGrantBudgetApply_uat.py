@@ -1,12 +1,5 @@
-import pandas as pd
-import dbutils
-import os
-import dbutils_prod
 import dbutils_uat
-import pymysql
-import TestDBConfig as config
-import dbutils_UAT as dbutils
-
+from test.longfor import TestDBConfig as config, dbutils_UAT as dbutils
 
 if __name__ == "__main__":
 

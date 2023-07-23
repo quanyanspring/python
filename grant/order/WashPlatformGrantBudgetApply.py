@@ -1,8 +1,7 @@
 import pandas as pd
-import dbutils
+from test.longfor import dbutils
 import os
 import dbutils_prod
-import dbutils_uat
 
 
 def writeToExcel(result,sheet_name):

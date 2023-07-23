@@ -3,12 +3,10 @@ import os
 
 import pandas
 import pandas as pd
-import dbutils
+from test.longfor import dbutils
 import test.GrantListSql as grant_list_sql
-from DBConfig import db_list_info as  db_info_list
-from WashGrantOrderSql import check_activity_sql
+from test.longfor.DBConfig import db_list_info as  db_info_list
 import WashGrantOrderSql as sql
-import FfAccNoList as ff_acc_list
 
 print_rersult_list = []
 
@@ -62,7 +60,7 @@ def checkGrantOrder(ff_acc_no, activity_no_list):
 
     # 订单模块流水
     activity_no_sum_map = dict()
-    col_list_m, row_list_m = dbutils.execute_sql(grant_list_sql.platform_grant_list_sql.format(activity_no_sql),"查询流水")
+    col_list_m, row_list_m = dbutils.execute_sql(grant_list_sql.platform_grant_list_sql.format(activity_no_sql), "查询流水")
     if row_list_m is None or len(row_list_m) == 0:
         print("订单模块流水为空:%s" % str(activity_no_list))
     else:
@@ -71,7 +69,7 @@ def checkGrantOrder(ff_acc_no, activity_no_list):
 
     # 回充数据
     activity_no_backwash_map = dict()
-    col_list_m, row_list_m = dbutils.execute_sql(grant_list_sql.platform_grant_backwash_sql.format(activity_no_sql),  "查询流水")
+    col_list_m, row_list_m = dbutils.execute_sql(grant_list_sql.platform_grant_backwash_sql.format(activity_no_sql), "查询流水")
     if row_list_m is None or len(row_list_m) == 0:
         print("回充数据为空:%s" % str(activity_no_list))
     else:
@@ -450,7 +448,7 @@ if __name__ == "__main__":
     ff_acc_no_map = dict()
     grant_method_name_map = dict()
     grant_status_map = dict()
-    col_list_m, row_list_g = dbutils.execute_sql(sql.select_budget_appply_ff_acc_sql,"查询活动")
+    col_list_m, row_list_g = dbutils.execute_sql(sql.select_budget_appply_ff_acc_sql, "查询活动")
 
     if row_list_g is not None and len(row_list_g) <= 0:
         raise TypeError

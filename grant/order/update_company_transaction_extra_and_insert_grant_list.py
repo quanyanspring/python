@@ -1,12 +1,6 @@
-import datetime
-import os
-
-import dbutils_uat as dbutils_uat
 import dbutils_prod as dbutils_prod
-import strutils
-import dbutils
+from test.longfor import dbutils
 import WashGrantOrderSql as order_sql
-from ConstansList import activity_no_map
 from ConstansList import ff_acc_no_list
 from grant.order import CompanyTransactionDTO
 from insert_grant_list import dealData
@@ -39,7 +33,7 @@ def grantListToCompanyTransaction(ff_acc_no,activity_no):
     out_trans_no_list = []
 
     #1、 查询差异数据
-    col_list_m, row_list_g = dbutils.execute_sql(order_sql.t_company_transaction_extra_is_null_sql.format( "'" + ff_acc_no + "'"), "查询差异流水")
+    col_list_m, row_list_g = dbutils.execute_sql(order_sql.t_company_transaction_extra_is_null_sql.format("'" + ff_acc_no + "'"), "查询差异流水")
     if row_list_g is None or len(row_list_g) <= 0:
         print("发放账户,ff_acc_no = %s,activity_no = %s,无差别数据" % (ff_acc_no,activity_no))
     else:
@@ -94,7 +88,7 @@ def checkActivity(ff_acc_no, activity_no):
 def queryCompanyTransaction(wallet_trans_no):
 
     #1、 查询差异数据
-    col_list_m, row_list_c = dbutils.execute_sql(order_sql.t_company_transaction_by_out_trans_no_sql.format("'" + wallet_trans_no + "'"), "查询项目公司流水",True)
+    col_list_m, row_list_c = dbutils.execute_sql(order_sql.t_company_transaction_by_out_trans_no_sql.format("'" + wallet_trans_no + "'"), "查询项目公司流水", True)
     if row_list_c is None or len(row_list_c) != 1:
         print("项目公司数据,查询错误,out_trans_no = %s" % (wallet_trans_no))
     else:
@@ -176,7 +170,7 @@ def insertGrantList(wallet_trans_no):
 
     print("流水号,out_trans_no = %s,清洗数据开始" % (wallet_trans_no))
 
-    col_list_m, row_list_b = dbutils.execute_sql(order_sql.t_platform_grant_list_is_null_sql.format("'" + wallet_trans_no + "'"),"查询订单模块")
+    col_list_m, row_list_b = dbutils.execute_sql(order_sql.t_platform_grant_list_is_null_sql.format("'" + wallet_trans_no + "'"), "查询订单模块")
     if row_list_b != None and len(row_list_b) > 0:
         print("插入订单模块流水号:%s,已存在" % wallet_trans_no)
         return

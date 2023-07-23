@@ -1,6 +1,5 @@
 import pandas as pd
-import dbutils
-import strutils
+from test.longfor import dbutils
 import os
 
 

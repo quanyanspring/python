@@ -1,7 +1,6 @@
 import DBConfig as config
 import dbutils
-import constants
-import datetime
+
 
 def build_sql(params,arr_1,arr_4):
     print("参数集合为：{}".format(params))

@@ -1,7 +1,7 @@
 import pandas as pd
 from utils import WriteToExcelUtil as writeUtil
 from GrantOrderFFAccount import is_check_out_ff_acc_no_list
-import dbutils
+from test.longfor import dbutils
 import GrantListSql as grant_list_sql
 
 if __name__ == "__main__":
@@ -144,7 +144,7 @@ if __name__ == "__main__":
         # 查询流水中活动的发放金额
         sum_trans_amount = 0
         extra = '{"activity_no":"%s","source":"platform_grant"}' % (activity_no)
-        col_list_m, row_list_m = dbutils.execute_sql(grant_list_sql.account_ff_ff_sql.format("'" + ff_acc_no + "'","'" + extra + "'"), "查询流水")
+        col_list_m, row_list_m = dbutils.execute_sql(grant_list_sql.account_ff_ff_sql.format("'" + ff_acc_no + "'", "'" + extra + "'"), "查询流水")
         if row_list_m is None or len(row_list_m) == 0:
             print("查询发放数据为空:ff_acc_no = %s,activity_no = %s" % (str(ff_acc_no),activity_no))
         else:

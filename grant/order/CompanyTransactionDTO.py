@@ -3,7 +3,7 @@
 """
 from datetime import datetime
 from typing import Any
-import constants
+from test.longfor import constants
 
 
 class CompanyTransactionDTO:

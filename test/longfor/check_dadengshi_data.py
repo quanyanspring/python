@@ -279,7 +279,7 @@ def red(start_time, temp_time):
 
 
 def sh_balance(start_time, temp_time):
-    col_list_m, row_list_m = dbutils.execute_sql(diff_sql_sh_balance,"查询流水",db_info[1],db_info[2])
+    col_list_m, row_list_m = dbutils.execute_sql(diff_sql_sh_balance, "查询流水", db_info[1], db_info[2])
     if row_list_m is None or len(row_list_m) == 0:
         pass
     else:

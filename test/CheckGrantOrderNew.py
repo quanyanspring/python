@@ -2,19 +2,12 @@ import os
 
 import pandas
 
-from DBConfig import db_list_info as  db_info_list
-import dbutils
+from test.longfor.DBConfig import db_list_info as  db_info_list
+from test.longfor import dbutils
 import json
-from GrantOrderFFAccount import backwash_check_list
-from GrantOrderFFAccount import normal_ff_list
-from GrantOrderFFAccount import error_ff_acc_no_list
-from GrantOrderFFAccount import exhaust_ff_acc_no_list
 from GrantOrderFFAccount import is_true_ff_acc_no_list
 import GrantListSql as grant_list_sql
 import pandas as pd
-from openpyxl import load_workbook
-
-
 
 print_rersult_list = []
 
@@ -52,7 +45,7 @@ def checkGrantOrder(db_info,ff_acc_no, activity_no_list,activity_no_map):
 
     # 预算申请
     activity_no_budget_map = dict()
-    col_list_m, row_list_m = dbutils.execute_sql(grant_list_sql.platform_grant_budget_apply_sql.format(activity_no_sql), "查询流水",db_info[1],db_info[2])
+    col_list_m, row_list_m = dbutils.execute_sql(grant_list_sql.platform_grant_budget_apply_sql.format(activity_no_sql), "查询流水", db_info[1], db_info[2])
     if row_list_m is None or len(row_list_m) == 0:
         print("查询预算为空:%s" % str(activity_no_list))
     else:
@@ -62,7 +55,7 @@ def checkGrantOrder(db_info,ff_acc_no, activity_no_list,activity_no_map):
 
     # 订单模块流水
     activity_no_sum_map = dict()
-    col_list_m, row_list_m = dbutils.execute_sql(grant_list_sql.platform_grant_list_sql.format(activity_no_sql),"查询流水", db_info[1], db_info[2])
+    col_list_m, row_list_m = dbutils.execute_sql(grant_list_sql.platform_grant_list_sql.format(activity_no_sql), "查询流水", db_info[1], db_info[2])
     if row_list_m is None or len(row_list_m) == 0:
         print("订单模块流水为空:%s" % str(activity_no_list))
     else:
@@ -71,7 +64,7 @@ def checkGrantOrder(db_info,ff_acc_no, activity_no_list,activity_no_map):
 
     # 回充数据
     activity_no_backwash_map = dict()
-    col_list_m, row_list_m = dbutils.execute_sql(grant_list_sql.platform_grant_backwash_sql.format(activity_no_sql),  "查询流水", db_info[1], db_info[2])
+    col_list_m, row_list_m = dbutils.execute_sql(grant_list_sql.platform_grant_backwash_sql.format(activity_no_sql), "查询流水", db_info[1], db_info[2])
     if row_list_m is None or len(row_list_m) == 0:
         print("回充数据为空:%s" % str(activity_no_list))
     else:
@@ -80,7 +73,7 @@ def checkGrantOrder(db_info,ff_acc_no, activity_no_list,activity_no_map):
 
     # 活动清零数据
     activity_no_clear_map = dict()
-    col_list_m, row_list_m = dbutils.execute_sql(grant_list_sql.platform_grant_clear_sql.format(activity_no_sql), "查询流水",db_info[1], db_info[2])
+    col_list_m, row_list_m = dbutils.execute_sql(grant_list_sql.platform_grant_clear_sql.format(activity_no_sql), "查询流水", db_info[1], db_info[2])
     if row_list_m is None or len(row_list_m) == 0:
         print("清零数据为空:%s" % str(activity_no_list))
     else:
