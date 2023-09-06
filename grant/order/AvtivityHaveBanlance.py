@@ -12,7 +12,7 @@ print_rersult_list = []
 
 # 打印到文件
 def writeToExcel(result,sheet_name):
-    file_name = "/Users/admin/Desktop/订单模块排查/活动维度排查结果_2023_01_30.xlsx"
+    file_name = "/Users/admin/Desktop/订单模块排查/活动维度排查结果_2023_08_16.xlsx"
 
     df = pd.DataFrame(result)
     if not os.path.exists(file_name):
@@ -450,7 +450,7 @@ if __name__ == "__main__":
     grant_status_map = dict()
     col_list_m, row_list_g = dbutils.execute_sql(sql.select_budget_appply_ff_acc_sql, "查询活动")
 
-    if row_list_g is not None and len(row_list_g) <= 0:
+    if row_list_g is  None or len(row_list_g) <= 0:
         raise TypeError
     else:
         for item in row_list_g:
