@@ -1,18 +1,25 @@
+import json
+from concurrent.futures import ThreadPoolExecutor
+
 import pymysql
-import pandas as pd
+import requests
+
+import Config
 
 # 创建一个MySQL数据库的连接对象
-conn_dev = pymysql.connect(
-    host='210.65.47.53', port=3309,
-    user='', password='',
-    charset='utf8mb4',database=""
-)
+# conn_dev = pymysql.connect(
+#     host='210.65.47.53', port=3309,
+#     user='', password='',
+#     charset='utf8mb4',database=""
+# )
 
 conn_prod = pymysql.connect(
     host='210.65.47.53', port=3309,
-    user='', password='',
-    charset='utf8mb4',database=""
+    user='fashuichangliunew', password='hvsVHDLfjoepqoweowuu2ehqdbaj',
+    charset='utf8mb4',database="fashuichangliunew"
 )
+
+base_uurl = ""
 
 """
    认识师父 
@@ -242,19 +249,34 @@ def readTalkData(conn):
 """
     统计目录文章数量
 """
-def updateCatalogueCount(conn):
+def updateCatalogueCount(conn,article_type):
     select_article_count_sql = """
-        select catalogue_id,count(*) from t_article_inf where is_delete = 0 group by catalogue_id;
+        select catalogue_id,count(*) from t_article_inf where is_delete = 0 and article_type = {0} group by catalogue_id;
     """
     update_catalogue_count_sql = """
         update t_catalogue_inf set resource_count = {0} where id = {1};
     """
     cursor1 = conn.cursor()
     cursor2 = conn.cursor()
-    cursor1.execute(select_article_count_sql)
+    cursor1.execute(select_article_count_sql.format(article_type))
     fetchall = cursor1.fetchall()
     for col in fetchall:
         cursor2.execute(update_catalogue_count_sql.format(col[1],col[0]))
+    conn.commit()
+
+def updateParanterCatalogueCount(conn,article_type):
+    select_article_count_sql = """
+        select sum(resource_count) as result,parent_id from t_catalogue_inf where belong = 5 and parent_id != 0 group by parent_id;
+    """
+    update_catalogue_count_sql = """
+        update t_catalogue_inf set resource_count = {0} where id = {1};
+    """
+    cursor1 = conn.cursor()
+    cursor2 = conn.cursor()
+    cursor1.execute(select_article_count_sql.format(article_type))
+    fetchall = cursor1.fetchall()
+    for col in fetchall:
+        cursor2.execute(update_catalogue_count_sql.format(col[0],col[1]))
     conn.commit()
 
 def readSourceSql(conn):
@@ -267,6 +289,129 @@ def readSourceSql(conn):
             conn.commit()
     conn.commit()
 
+def invoke(params):
+
+    split = str(params).split("-")
+
+    server = "https://work.hwadzan.org/api/hwadzan/v2/medias/{0}/{1}"
+
+    resp = requests.get(server.format(split[0],split[1]), timeout=1000)
+    return resp.text
+
+def sync_speech_task(conn,data_chunk,resouce_id_dict):
+
+    # 请求接口
+    detail = json.loads(invoke(data_chunk[0]))
+
+    url = detail['jiangtanginfo']['subtable']['logo']
+
+    if url is None or len(url) < 1:
+        pass
+    else:
+        cover_url = base_uurl + url
+
+        if cover_url in resouce_id_dict and data_chunk[1] == resouce_id_dict[cover_url]:
+            print("跳过：%s" % data_chunk[0])
+            pass
+        else:
+            cursor2 = conn.cursor()
+            print("新增id = %s,url = %s, new_url = %s" % (data_chunk[0],data_chunk[2],cover_url))
+            cursor2.execute(Config.insert_resource_sql.format("'" + data_chunk[0] + "'","'" + cover_url + "'", "'" + data_chunk[0] + "'"))
+            lastId = cursor2.lastrowid
+            print("返回 id = %s" % lastId)
+
+            cursor3 = conn.cursor()
+            cursor3.execute(Config.update_article_sql.format(lastId,data_chunk[3]))
+            conn.commit()
+            print("修改 id = %s" % data_chunk[3])
+
+    print("完成 sourceId = %s" % data_chunk[0])
+
+    conn.commit()
+
+def task(data_chunk):
+    sync_speech_task(con,data_chunk,resouce_id_dict)
+
+def thread_pool_process(con):
+
+    cursor = con.cursor()
+    cursor.execute(Config.select_article_sql.format("'" + '01-000' + "'"))
+    fetchall = cursor.fetchall()
+
+    resouce_id_dict = {}
+    for item in fetchall:
+        resouce_id_dict[item[2]] = item[1]
+
+    # 将数据集分成多个较小的分片
+    num_threads = 8
+    chunk_size = len(fetchall) // num_threads
+    data_chunks = [fetchall[i:i + chunk_size] for i in range(0, len(fetchall), chunk_size)]
+
+    # 创建线程池
+    thread_pool = ThreadPoolExecutor(max_workers=num_threads)
+
+    # 定义任务函数，用于处理每个分片的数据
+
+    # 提交任务给线程池
+    for chunk in data_chunks:
+        thread_pool.submit(task(con,chunk,), chunk)
+
+def syncSpeech(conn):
+    select_article_sql = """
+            select t.source_id, tt.id as resourceId, tt.resource_url, t.id as articleId
+            from t_article_inf t
+                     left join t_resource_inf tt on t.cover_resource_id = tt.id
+            where t.article_type = 5
+              and t.source_id > {0}
+            order by t.source_id asc;
+        """
+
+    insert_resource_sql = """
+               INSERT INTO t_resource_inf (title, resource_url, resource_url_type, invite_time, content, resource_type, name, area,
+                            is_delete, source_type, create_time, update_time)
+                VALUES ({0}, {1}, 0, null, null, 3, {2}, null, 0, 0,NOW(6), NOW(6));
+            """
+
+    update_article_sql = """
+                  update t_article_inf set cover_resource_id = {0} where id = {1};
+                """
+
+    cursor1 = conn.cursor()
+    cursor2 = conn.cursor()
+    cursor3 = conn.cursor()
+    cursor1.execute(select_article_sql.format("'" + '32-117' + "'"))
+    fetchall = cursor1.fetchall()
+
+    resouceId_dict = {}
+    for item in fetchall:
+        resouceId_dict[item[2]] = item[1]
+
+    for col in fetchall:
+
+        detail = json.loads(invoke(col[0]))
+
+        url = detail['jiangtanginfo']['subtable']['logo']
+
+        if url is None or len(url) < 1:
+            pass
+        else:
+            cover_url = base_uurl + url
+
+            if cover_url in resouceId_dict and col[1] == resouceId_dict[cover_url]:
+                print("跳过：%s" % col[0])
+                pass
+            else:
+                print("新增id = %s,url = %s, new_url = %s" % (col[0],col[2],cover_url))
+                cursor2.execute(insert_resource_sql.format("'" + col[0] + "'","'" + cover_url + "'", "'" + col[0] + "'"))
+                lastId = cursor2.lastrowid
+                print("返回 id = %s" % lastId)
+                cursor3.execute(update_article_sql.format(lastId,col[3]))
+                conn.commit()
+                print("修改 id = %s" % col[3])
+
+        print("完成 sourceId = %s" % col[0])
+
+    conn.commit()
 
 if __name__ == "__main__":
 
@@ -283,4 +428,9 @@ if __name__ == "__main__":
     # 菁华开示
     # readTalkData(db_info)
     #统计文章数量
-    updateCatalogueCount(db_info)
+    # updateCatalogueCount(db_info,5)
+
+    # updateParanterCatalogueCount(db_info,5)
+    # thread_pool_process(conn_prod)
+    
+    syncSpeech(db_info)
